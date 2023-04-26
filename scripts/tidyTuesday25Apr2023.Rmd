@@ -1,0 +1,85 @@
+---
+title: "April 25 Tidy Tuesday"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Packages
+```{r}
+library(tidyverse)
+library(skimr)
+library(lubridate)
+```
+# Get the Data
+
+
+# Or read in the data manually
+
+```{r}
+winners <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-04-25/winners.csv')
+london_marathon <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-04-25/london_marathon.csv')
+
+```
+
+```{r}
+winners
+```
+
+```{r}
+london_marathon
+```
+
+```{r}
+glimpse(london_marathon)
+```
+
+```{r}
+glimpse(winners)
+```
+```{r}
+skim(winners)
+```
+
+```{r}
+skim(london_marathon)
+```
+
+```{r}
+ggplot(winners, aes(x=Year, y=Time)) +
+  geom_point() +
+  facet_wrap(~Category, scales="free_y")
+```
+
+```{r}
+( winners %>% mutate(wchair = str_detect(Category, "chair")) -> wins )
+```
+
+# install ggflag
+```{r}
+remotes::install_github("jimjam-slam/ggflags")
+```
+
+```{r}
+library(ggflags)
+```
+
+```{r}
+men = wins %>% filter(Category=="Men")
+women = wins %>% filter(Category=="Women")
+( wcmen = wins %>% filter(Category=="Wheelchair Men") )
+wcwomen = wins %>% filter(Category=="Wheelchair Women")
+```
+```{r}
+
+scaleFUN <- function(x) sprintf("%.2f", x)
+
+ggplot(wcmen, aes(x=Year, y=Time)) +
+  geom_point() +
+  scale_y_time(
+    labels = ~paste0(hour(.x), "H")
+  )
+
+```
